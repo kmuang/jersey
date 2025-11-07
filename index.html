@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Football Jerseys</title> 
+<link rel="shortcut icon" href="img/logo.png" type="image/x-icon">
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+
+<h1 class="text-3xl font-bold text-center text-blue-700 mb-8">Football Jerseys </h1>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 max-w-7xl mx-auto" id="jerseyGrid">
+  <!-- Jerseys dynamically populated -->
+</div>
+
+<!-- Modal -->
+<div id="jerseyModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+  <div class="bg-white rounded-2xl p-6 w-96 max-w-lg relative">
+    <button onclick="closeModal()" class="absolute top-2 right-3 text-gray-500 font-bold text-xl hover:text-gray-800">&times;</button>
+    
+    <!-- Carousel -->
+    <div class="relative">
+      <img id="modalImage" src="" alt="Jersey" class="w-full h-96 object-cover rounded-lg mb-4 transition-transform duration-300 transform hover:scale-105">
+      <button onclick="prevImage()" class="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white bg-opacity-70 p-1 rounded-full">&lt;</button>
+      <button onclick="nextImage()" class="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white bg-opacity-70 p-1 rounded-full">&gt;</button>
+    </div>
+    
+    <h2 id="modalTeam" class="text-2xl font-bold text-blue-700 mb-2 text-center"></h2>
+    <p id="modalNumber" class="text-gray-700 text-center mb-2"></p>
+    <p id="modalLeague" class="text-gray-500 text-center"></p>
+  </div>
+</div>
+</body> 
+<footer class="w-full text-blue-700 text-center py-4 mt-8">
+  <p>&copy; <span id="year"></span> Football Jerseys. All rights reserved.</p>
+</footer>
+
+<script>
+  // Set current year
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script> 
+
+<script>
+const jerseys = [
+  { 
+    team: "🇮🇹 Juventus", 
+    logos: ["https://upload.wikimedia.org/wikipedia/commons/e/ed/Juventus_FC_-_logo_black_%28Italy%2C_2020%29.svg"], 
+    jerseys: [
+      "https://www.imagehandler.net/preview/?istyle=0000&fmt=jpg&w=1000&h=1000&cmp=100&c=999&img=A1116876000&iset=0100&iindex=0007",
+      "https://www.imagehandler.net/preview/?istyle=0000&fmt=jpg&w=1000&h=1000&cmp=100&c=999&img=A1116876000&iset=0100&iindex=0009"
+    ], 
+    league: "🇮🇹 Serie A"
+  },
+  { 
+    team: "🇪🇸 Barcelona", 
+    logos: ["https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg"], 
+    jerseys: [
+      "https://www.imagehandler.net/preview/?istyle=0000&fmt=jpg&w=1000&h=1000&cmp=100&c=999&img=A1121586000&iset=0100&iindex=0007",
+      "https://www.imagehandler.net/preview/?istyle=0000&fmt=jpg&w=1000&h=1000&cmp=100&c=999&img=A1121586000&iset=0100&iindex=0009"
+    ], 
+    league: "🇪🇸 La Liga" 
+  },
+  { 
+    team: "🇪🇸 Real Madrid", 
+    logos: ["https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg"], 
+    jerseys: [
+      "https://www.imagehandler.net/preview/?istyle=0000&fmt=jpg&w=1000&h=1000&cmp=100&c=999&img=A1116858000&iset=0100&iindex=0007",
+      "https://www.imagehandler.net/preview/?istyle=0000&fmt=jpg&w=1000&h=1000&cmp=100&c=999&img=A1116858000&iset=0100&iindex=0009"
+    ], 
+    league: "🇪🇸 La Liga" 
+  },
+  { 
+    team: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Manchester United", 
+    logos: ["https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg"], 
+    jerseys: [
+      "https://www.imagehandler.net/preview/?istyle=0000&fmt=jpg&w=1000&h=1000&cmp=100&c=999&img=A1117062000&iset=0100&iindex=0007",
+      "https://www.imagehandler.net/preview/?istyle=0000&fmt=jpg&w=1000&h=1000&cmp=100&c=999&img=A1117062000&iset=0100&iindex=0009"
+    ], 
+    league: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League" 
+  },
+  { 
+    team: "🇩🇪 Bayern Munich", 
+    logos: ["https://upload.wikimedia.org/wikipedia/commons/1/1f/Logo_FC_Bayern_M%C3%BCnchen_%282002%E2%80%932017%29.svg"], 
+    jerseys: [
+      "https://www.imagehandler.net/preview/?istyle=0000&fmt=jpg&w=1000&h=1000&cmp=100&c=999&img=A1116884000&iset=0100&iindex=0007&l1lc=0OR203&l1s=4&l1l=R1128076",
+      "https://www.imagehandler.net/preview/?istyle=0000&fmt=jpg&w=1000&h=1000&cmp=100&c=999&img=A1116766000&iset=0100&iindex=0009&l2lc=0OB102&l2s=13&l2l=R1128061&l3lc=0OR203&l3s=4&l3l=R1128076"
+    ], 
+    league: "🇩🇪 Bundesliga"
+  },
+  { 
+    team: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Liverpool", 
+    logos: ["https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg"], 
+    jerseys: [
+      "https://www.imagehandler.net/preview/?istyle=0000&fmt=jpg&w=1000&h=1000&cmp=100&c=999&img=A1116754000&iset=0100&iindex=0007",
+      "https://www.imagehandler.net/preview/?istyle=0000&fmt=jpg&w=1000&h=1000&cmp=100&c=999&img=A1116754000&iset=0100&iindex=0009"
+    ], 
+    league: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League" 
+  },
+  { 
+    team: "🇫🇷 PSG", 
+    logos: ["https://upload.wikimedia.org/wikipedia/en/a/a7/Paris_Saint-Germain_F.C..svg"], 
+    jerseys: [
+      "https://www.imagehandler.net/preview/?istyle=0000&fmt=jpg&w=1000&h=1000&cmp=100&c=999&img=A1115003000&iset=0100&iindex=0007",
+      "https://www.imagehandler.net/preview/?istyle=0000&fmt=jpg&w=1000&h=1000&cmp=100&c=999&img=A1115003000&iset=0100&iindex=0009"
+    ], 
+    league: "🇫🇷 Ligue 1" 
+  },
+  { 
+    team: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Chelsea", 
+    logos: ["https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg"], 
+    jerseys: [
+      "https://www.imagehandler.net/preview/?istyle=0000&fmt=jpg&w=1000&h=1000&cmp=100&c=999&img=A1114989000&iset=0100&iindex=0007",
+      "https://www.imagehandler.net/preview/?istyle=0000&fmt=jpg&w=1000&h=1000&cmp=100&c=999&img=A1114989000&iset=0100&iindex=0009"
+    ], 
+    league: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League" 
+  },
+  { 
+    team: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Arsenal", 
+    logos: ["https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg"], 
+    jerseys: [
+      "https://www.imagehandler.net/preview/?istyle=0000&fmt=jpg&w=1000&h=1000&cmp=100&c=999&img=A1116900000&iset=0100&iindex=0007",
+      "https://www.imagehandler.net/preview/?istyle=0000&fmt=jpg&w=1000&h=1000&cmp=100&c=999&img=A1116900000&iset=0100&iindex=0009"
+    ], 
+    league: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League" 
+  },
+  { 
+    team: "🇮🇹 Inter Milan", 
+    logos: ["https://upload.wikimedia.org/wikipedia/commons/2/2d/Inter_Milano_2021_logo_with_one_star.svg"], 
+    jerseys: [
+      "https://www.imagehandler.net/preview/?istyle=0000&fmt=jpg&w=1000&h=1000&cmp=100&c=999&img=A1114993000&iset=0100&iindex=0007",
+      "https://www.imagehandler.net/preview/?istyle=0000&fmt=jpg&w=1000&h=1000&cmp=100&c=999&img=A1114993000&iset=0100&iindex=0009"
+    ], 
+    league: "🇮🇹 Serie A" 
+  }
+];
+
+let currentTeamIndex = 0;
+let currentImageIndex = 0;
+
+// Render jerseys
+const grid = document.getElementById("jerseyGrid");
+
+jerseys.forEach((team, index) => {
+  const div = document.createElement("div");
+  div.className = "bg-white rounded-xl shadow-lg p-4 flex flex-col items-center cursor-pointer hover:shadow-2xl transition";
+  div.innerHTML = `
+    <img src="${team.logos[0]}" alt="${team.team} Logo" class="w-16 h-16 mb-2">
+    <img src="${team.jerseys[0]}" alt="${team.team} Jersey" class="w-40 h-40 object-cover rounded-lg mb-2 transition-transform duration-300 transform hover:scale-105">
+    <p class="font-semibold text-gray-800">${team.team}</p>
+  `;
+  div.addEventListener("click", () => openModal(index));
+  grid.appendChild(div);
+});
+
+// Open modal
+function openModal(index) {
+  currentTeamIndex = index;
+  currentImageIndex = 0;
+  const modal = document.getElementById("jerseyModal");
+  updateModalImage();
+  const team = jerseys[index];
+  document.getElementById("modalTeam").textContent = team.team;
+  document.getElementById("modalLeague").textContent = `League: ${team.league}`;
+  modal.classList.remove("hidden");
+}
+
+// Close modal
+function closeModal() {
+  document.getElementById("jerseyModal").classList.add("hidden");
+}
+
+// Carousel controls
+function updateModalImage() {
+  const team = jerseys[currentTeamIndex];
+  document.getElementById("modalImage").src = team.jerseys[currentImageIndex];
+}
+
+function prevImage() {
+  const team = jerseys[currentTeamIndex];
+  currentImageIndex = (currentImageIndex - 1 + team.jerseys.length) % team.jerseys.length;
+  updateModalImage();
+}
+
+function nextImage() {
+  const team = jerseys[currentTeamIndex];
+  currentImageIndex = (currentImageIndex + 1) % team.jerseys.length;
+  updateModalImage();
+} 
+
+// Close modal when pressing "Esc"
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    closeModal();
+  }
+});
+</script>
+
+</body>
+</html>
